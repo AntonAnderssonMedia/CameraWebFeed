@@ -15,7 +15,21 @@
         width: 100vw; height: 100vh; object-fit: cover;
         background: #000;
       }
-      .btn { position: fixed; z-index: 2; top: 12px; left: 12px; }
+      .btn {
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1em 2em;
+        font-size: 1em;
+        border-radius: 0.5em;
+        background: #222;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
     </style>
   </head>
   <body>
@@ -32,6 +46,8 @@
           const v = document.getElementById('v');
           v.srcObject = stream;
           await v.play();
+          // Hide the button after enabling camera
+          document.getElementById('go').style.display = 'none';
         } catch (e) {
           alert('Camera error. In Safari: aA ▸ Website Settings ▸ Camera: Allow. Use HTTPS.');
           console.error(e);
