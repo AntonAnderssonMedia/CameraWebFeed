@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <!--  SIMPLE CAMERA TEST FOR iOS! -->
+
+    <meta charset="utf-8" />
+    <title>Camera Test</title>¨
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; }
+      #wrap { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; }
+      video {
+        width: 100vw; height: 100vh; object-fit: cover;
+        background: #000;
+      }
+      .btn { position: fixed; z-index: 2; top: 12px; left: 12px; }
+    </style>
+  </head>
+  <body>
+    <button class="btn" id="go">Enable Camera</button>
+    <div id="wrap">
+      <video id="v" playsinline webkit-playsinline autoplay muted></video>
+    </div>
+    <script>
+      document.getElementById('go').addEventListener('click', async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } }, audio: false
+          });
+          const v = document.getElementById('v');
+          v.srcObject = stream;
+          await v.play();
+        } catch (e) {
+          alert('Camera error. In Safari: aA ▸ Website Settings ▸ Camera: Allow. Use HTTPS.');
+          console.error(e);
+        }
+      });
+    </script>
+  </body>
+</html>
