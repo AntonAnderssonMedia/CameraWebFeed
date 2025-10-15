@@ -1,56 +1,58 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Camera Test</title>
-  <style>
-    :root { color-scheme: dark light; }
-    body { margin: 0; font-family: system-ui, sans-serif; display: grid; place-items: center; min-height: 100dvh; gap: 16px; }
-    video { width: min(90vw, 600px); aspect-ratio: 16/9; background:#000; border-radius: 12px; }
-    button { padding: .7rem 1rem; border-radius: 10px; border: 1px solid #999; background: #eee; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <button id="btn">Start Camera</button>
-  <video id="v" autoplay playsinline muted></video>
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <!--  SIMPLE CAMERA TEST FOR iOS! -->
 
-  <script>
-    const btn = document.getElementById('btn');
-    const video = document.getElementById('v');
+    <meta charset="utf-8" />
+    <title>Camera Test</title>¨
 
-    async function startCamera() {
-      // Try rear camera first; fall back to any camera if needed
-      const constraintsList = [
-        { video: { facingMode: { ideal: 'environment' } }, audio: false },
-        { video: true, audio: false }
-      ];
-      let stream, lastError;
-      for (const c of constraintsList) {
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html, body { margin: 0; height: 100%; background: #000; }
+      #wrap { position: fixed; inset: 0; display: grid; place-items: center; color: #fff; }
+      video {
+        width: 100vw; height: 100vh; object-fit: cover;
+        background: #000;
+      }
+      .btn {
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 1em 2em;
+        font-size: 1em;
+        border-radius: 0.5em;
+        background: #222;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <button class="btn" id="go">Enable Camera</button>
+    <div id="wrap">
+      <video id="v" playsinline webkit-playsinline autoplay muted></video>
+    </div>
+    <script>
+      document.getElementById('go').addEventListener('click', async () => {
         try {
-          stream = await navigator.mediaDevices.getUserMedia(c);
-          break;
-        } catch (e) { lastError = e; }
-      }
-      if (!stream) {
-        alert('Could not start camera: ' + (lastError?.message || 'unknown error'));
-        return;
-      }
-      video.srcObject = stream;
-      // iOS sometimes needs a play() after a gesture
-      try { await video.play(); } catch {}
-      btn.textContent = 'Camera running';
-      btn.disabled = true;
-    }
-
-    // Safari/iOS requires user gesture → click to start
-    btn.addEventListener('click', startCamera);
-
-    // Helpful checks
-    if (!('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices)) {
-      btn.disabled = true;
-      alert('getUserMedia not supported in this browser.');
-    }
-  </script>
-</body>
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } }, audio: false
+          });
+          const v = document.getElementById('v');
+          v.srcObject = stream;
+          await v.play();
+          // Hide the button after enabling camera
+          document.getElementById('go').style.display = 'none';
+        } catch (e) {
+          alert('Camera error. In Safari: aA ▸ Website Settings ▸ Camera: Allow. Use HTTPS.');
+          console.error(e);
+        }
+      });
+    </script>
+  </body>
 </html>
